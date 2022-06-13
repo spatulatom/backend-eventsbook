@@ -15,7 +15,9 @@ const eventSchema = new Schema({
   date: {type: String, required: true},
   creatorName: {type: String, required: true},
   creatorImage: { type: String, required: true },
+
   likes: [{type: Object, required: true}]
 });
 
 module.exports = mongoose.model('Event', eventSchema);
+// 

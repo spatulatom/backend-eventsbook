@@ -28,6 +28,7 @@ const createComment = async(req, res, next)=>{
                        'Creating comment failed, please try again.',
                        500
                      );
+                     
                      return next(error);
                    }
                  

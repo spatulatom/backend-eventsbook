@@ -149,7 +149,7 @@ const transporter = nodemailer.createTransport(
   sendgridTransport({
     auth: {
       // you can use here usrename as well
-      api_key: process.env.EMAIL_KEY
+      api_key: process.env.SENDGRID_API_KEY
     }
   })
 );
@@ -305,7 +305,7 @@ const reset = async (req,res,next)=>{
       sendgridTransport({
         auth: {
           // you can use here usrename as well
-          api_key: process.env.EMAIL_KEY
+          api_key: process.env.SENDGRID_API_KEY
         }
       })
     );

@@ -459,6 +459,11 @@ const updateEvent = async (req, res, next) => {
     return next(error);
   }
 
+
+  // we re converting creator toString() otherwise the comparison
+  // wont work, why? Because what we geeting from mongo here is 
+  // this mongoose special object which looks like object but its not really
+  // (and whenever we res.send it we need to do this toObject method)
   if (event.creator.toString() !== req.userData.userId) {
     const error = new HttpError('You are not allowed to edit this event.', 401);
     return next(error);
@@ -513,9 +518,11 @@ const deleteEvent = async (req, res, next) => {
     return next(error);
   }
 
-  if (event.creator.id !== req.userData.Id) {
+  // we dont need to call toString here because this id getter (throug populate)
+  // is already returning a string here
+  if (event.creator.id !== req.userData.userId) {
     const error = new HttpError(
-      'You are not allowed to delete this event',
+      'You are not allowed to delete this event.',
       401
     );
     return next(error);
@@ -531,7 +538,7 @@ const deleteEvent = async (req, res, next) => {
     await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong2, could not delete event.',
+      'Something went wrong2, could not delete this event.',
       500
     );
     return next(error);

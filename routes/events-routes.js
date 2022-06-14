@@ -34,8 +34,9 @@ router.post(
 
 router.post(
   '/post',
-  // have to add adress
-  [
+  [  check('address')
+  .not()
+  .isEmpty(),
     check('description').isLength({ min: 2 }),
   ],
   eventsControllers.newPost
@@ -51,7 +52,9 @@ router.post(
 router.patch(
   '/:pid',
   [
-    // add adress
+    check('address')
+    .not()
+    .isEmpty(),
     check('description').isLength({ min: 5 })
   ],
   eventsControllers.updateEvent

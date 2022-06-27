@@ -383,6 +383,7 @@ const newPhoto =  (req, res, next) => {
                     let date;
                     let localDate;
                     
+                    // when deploy on Heroku we get -1h
                     date = new Date();
                     // localDate = new Intl.DateTimeFormat('pl-PL',{ dateStyle: 'medium', timeStyle: 'short' }).format(date)
                     localDate = new Intl.DateTimeFormat('en-GB',{ dateStyle: 'medium', timeStyle: 'short' }).format(date)

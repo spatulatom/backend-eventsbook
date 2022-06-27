@@ -263,7 +263,8 @@ const newPost = async(req,res,next) => {
 
                     let date;
                     let localDate;
-                    date = new Date();
+                    // date = new Date();
+                    date = new Date(new Date().setHours(new Date().getHours() + 1));
                     // localDate = new Intl.DateTimeFormat('pl-PL',{ dateStyle: 'full', timeStyle: 'short' }).format(date)
                     localDate = new Intl.DateTimeFormat('en-GB',{ dateStyle: 'medium', timeStyle: 'short' }).format(date)
   
@@ -383,8 +384,10 @@ const newPhoto =  (req, res, next) => {
                     let date;
                     let localDate;
                     
-                    // when deploy on Heroku we get -1h
-                    date = new Date();
+                    // when deploy on Heroku we get -1h, so for now we will add +1 but permanet solution needed, perhaps this:
+                    // https://stackoverflow.com/questions/69545897/javascript-date-time-different-once-deployed-to-heroku
+                    // date = new Date();
+                    date = new Date(new Date().setHours(new Date().getHours() + 1));
                     // localDate = new Intl.DateTimeFormat('pl-PL',{ dateStyle: 'medium', timeStyle: 'short' }).format(date)
                     localDate = new Intl.DateTimeFormat('en-GB',{ dateStyle: 'medium', timeStyle: 'short' }).format(date)
                     

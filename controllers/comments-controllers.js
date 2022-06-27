@@ -56,8 +56,8 @@ const createComment = async(req, res, next)=>{
 
           let date;
           let localDate;
-          date = new Date();
-
+          // date = new Date();
+          date = new Date(new Date().setHours(new Date().getHours() + 1));
          // Specify date and time format using "style" options (i.e. full, long, medium, short)
           localDate = new Intl.DateTimeFormat('en-GB',{ dateStyle: 'medium', timeStyle: 'short' }).format(date);
 

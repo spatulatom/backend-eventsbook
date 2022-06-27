@@ -56,6 +56,7 @@ const createComment = async(req, res, next)=>{
 
           let date;
           let localDate;
+          // heroku time is -1h, so temporarly we will add 1h
           // date = new Date();
           date = new Date(new Date().setHours(new Date().getHours() + 1));
          // Specify date and time format using "style" options (i.e. full, long, medium, short)

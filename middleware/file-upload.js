@@ -6,9 +6,12 @@ const MIME_TYPE_MAP = {
   'image/jpeg': 'jpeg',
   'image/jpg': 'jpg'
 };
-
+const maxSize = 1 * 1000 * 3000;
 const fileUpload = multer({
-  limits: 500000,
+  // limits: 500000,
+  limits:{
+    fileSize: maxSize},
+    
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, 'uploads/images');
@@ -20,6 +23,8 @@ const fileUpload = multer({
   }),
   fileFilter: (req, file, cb) => {
     const isValid = !!MIME_TYPE_MAP[file.mimetype];
+    // we are not throwing an error here yet with the icorrect mime type the bleow message
+    // was show on the frontend, perhaps 'cb' throws
     let error = isValid ? null : new Error('Invalid mime type!');
     cb(error, isValid);
   }

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+// const nestjs = require ('@nestjs/cli');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -9,6 +10,7 @@ const eventsRoutes = require('./routes/events-routes');
 const usersRoutes = require('./routes/users-routes');
 const commentsRoutes = require('./routes/comments-routes');
 const HttpError = require('./models/http-error');
+const { MulterError } = require('multer');
 
 // intrestingly in my portfolio backend had to use cors
 // module for preventog preflight request stoppage:
@@ -41,6 +43,11 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
+  if (error instanceof MulterError) {
+    // https://github.com/expressjs/multer/issues/602
+    error.code = 413;
+    error.message = "Image too large, max size is 3mb! Upload smaller image please.";
+    }
   if (req.file) {
     fs.unlink(req.file.path, err => {
       console.log(err);

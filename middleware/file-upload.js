@@ -25,7 +25,7 @@ const fileUpload = multer({
     const isValid = !!MIME_TYPE_MAP[file.mimetype];
     // we are not throwing an error here yet with the icorrect mime type the bleow message
     // was show on the frontend, perhaps 'cb' throws
-    let error = isValid ? null : new Error('Invalid mime type!');
+    let error = isValid ? null : new Error('Invalid mime type, only .png, .jpeg and .jpg types.');
     cb(error, isValid);
   }
 });

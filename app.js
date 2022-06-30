@@ -45,6 +45,8 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
   if (error instanceof MulterError) {
     // https://github.com/expressjs/multer/issues/602
+    // note that 'invalid meme type' is still handled separetly and is not catched here
+    // as MulterError, gies straight to the bottom
     error.code = 413;
     error.message = "Image too large, max size is 3mb! Upload smaller image please.";
     }

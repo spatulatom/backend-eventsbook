@@ -6,7 +6,7 @@ const MIME_TYPE_MAP = {
   'image/jpeg': 'jpeg',
   'image/jpg': 'jpg'
 };
-const maxSize = 1 * 1000 * 3000;
+const maxSize = 1 * 1000 * 10000;
 const fileUpload = multer({
   // limits: 500000,
   limits:{

@@ -48,7 +48,7 @@ app.use((error, req, res, next) => {
     // note that 'invalid meme type' is still handled separetly and is not catched here
     // as MulterError, gies straight to the bottom
     error.code = 413;
-    error.message = "Image too large, max size is 3mb! Upload smaller image please.";
+    error.message = "Image too large, max size is 10mb! Upload smaller image please.";
     }
   if (req.file) {
     fs.unlink(req.file.path, err => {

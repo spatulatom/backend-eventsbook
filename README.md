@@ -8,5 +8,5 @@ All key APIs key are stored in enviromental variables.
 
 Multer middleware library is used for uploading multipart/form-data (photos), bcrypt library for hashing password and jsonwebtoken for creating login token.
 
-All sorts of errors are being handled on this back nd with custom error messages sent back to the fronend futher for better UX.
+All sorts of errors are being handled on this backend with custom error messages sent back to the fronend for better UX.
 

@@ -4,7 +4,7 @@ This is the backend source code of a MERN app called 'eventsbook' intended as so
 deployed on Heroku.
 
 This backend server is built with Node.js, Express.js, Mongoose Schemas for 'elegant MongoDB object modelling' and MongoDB for a database. It is using Google Map Platform APIs for the 'location' functionality, Amazon AWS services API for permanently storing uploaded photos, SendGrid APIs for a notification email sent to a user upon successfull account creation/changing password.
-All key APIs key are stored in enviromental variables.
+All API keys are stored in enviromental variables.
 
 Multer middleware library is used for uploading multipart/form-data (photos), bcrypt library for hashing password and jsonwebtoken for creating login token.
 

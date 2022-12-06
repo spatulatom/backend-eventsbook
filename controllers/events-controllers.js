@@ -384,7 +384,7 @@ const newPhoto =  (req, res, next) => {
                     let date;
                     let localDate;
                     
-                    // when deploy on Heroku we get -1h, so for now we will add +1 but permanet solution needed, perhaps this:
+                    // when deployed on Heroku we get -1h, so for now we will add +1 but permanet solution needed, perhaps this:
                     // https://stackoverflow.com/questions/69545897/javascript-date-time-different-once-deployed-to-heroku
                     // date = new Date();
                     date = new Date(new Date().setHours(new Date().getHours() + 1));

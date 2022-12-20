@@ -312,7 +312,7 @@ const reset = async (req,res,next)=>{
     try{
       await transporter.sendMail({
         to: req.body.email,
-          from: 'spatulatom@gmail.com',
+          from: 'elkom9393@gmail.com',
           subject: 'Password reset.',
           html: `
             <p>You have just requested password change. Use link below (valid for 60 minutes).</p>

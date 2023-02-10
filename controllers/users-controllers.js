@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
+const cloudinary = require('cloudinary').v2;
 
 // for aws
 const AWS = require('aws-sdk');
@@ -30,41 +31,28 @@ const getUsers = async (req, res, next) => {
 
 const signup = (req, res, next) => {
 
-// logic for aws:
-const s3 = new AWS.S3({
-  secretAccessKey: process.env.AWS_SECRET_KEY,
-  accessKeyId: process.env.AWS_KEY_ID,
-})
+   // Configuration
+   cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_KEY,
+    api_secret: process.env.CLOUD_SECRET
+  });
 
+  //  see familija repository for Amazon web Services S3 bucket connection
 
-readfile=  fs.readFile(req.file.path, (err, fileBody) => {
-  console.log('here') ;
-  if(err) {
-    console.log("Error2", err);
-    const error = new HttpError(
-     'Reading image file failed by fs.readFile.',
-     422
-   );
-   return next(error)
-  }  else {
-      let params = {
-          ACL: "public-read-write",
-          Bucket: 'eventsbook22',
-          Body: fileBody,
-          ContentType: req.file.mimetype,
-          Key: uuid()
-      };
-     console.log('here') ;
-      s3.upload(params, async(err, result) => {
-          if(err) {
-            console.log("Error3", err);
-            return next(
-             new HttpError(err, err.statusCode)
-           );
-          } else {
-              
-             console.log("S3 Response",result.Location);
-               result.Location
+  console.log('here');
+  const response = cloudinary.uploader.upload(req.file.path, {
+    public_id: uuid(),
+  });
+  response
+    .catch((err) => {
+      console.log(err);
+      return next(new HttpError(err, err.statusCode));
+    })
+    .then(async (data) => {
+      console.log('Cloudinary response', data);
+      console.log(data.secure_url)
+
 
   const errors = validationResult(req);
             
@@ -109,7 +97,7 @@ readfile=  fs.readFile(req.file.path, (err, fileBody) => {
   const createdUser = new User({
     name,
     email,
-    image: result.Location,
+    image: data.secure_url,
     password: hashedPassword,
     events: []
   });
@@ -165,11 +153,10 @@ try{
   return next()
 
 }
-}
+
       })
       
-  }
-});
+
 
 };
 

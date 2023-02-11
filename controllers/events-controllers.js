@@ -295,7 +295,7 @@ const newPhoto = (req, res, next) => {
   response
     .catch((err) => {
       console.log(err);
-      return next(new HttpError(err, err.statusCode));
+      return next(new HttpError('Here problem', err.statusCode));
     })
     .then(async (data) => {
       console.log('Cloudinary response', data);
@@ -383,17 +383,18 @@ const newPhoto = (req, res, next) => {
         return next(error);
       }
 
-    fs.unlink(req.file.path, (err) => {
-        //  its not crucial so we wont stop the execution if insuccessfull
-        console.log(err);
-        //   const error = new HttpError(
-        //     'Could not unlink the file.',
-        //     500
-        //   );
-        //   return next(error);
-      });
+   
 
       res.status(201).json({ photo: newPhoto });
+    });
+    fs.unlink(req.file.path, (err) => {
+      //  its not crucial so we wont stop the execution if insuccessfull
+      console.log(err);
+      //   const error = new HttpError(
+      //     'Could not unlink the file.',
+      //     500
+      //   );
+      //   return next(error);
     });
 };
 

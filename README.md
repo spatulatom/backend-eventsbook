@@ -63,7 +63,7 @@
 * [![React][React.js]][React-url]
 * Node.js, Express.js, Mongoose 
 * MongoBD for a database
-* Amazon Web Services API for stroing photos
+* Cloudinary API for stroing photos
 * Google Maps Platform API for events locations
 * SendGrid API for password change
 * Multer middleware library for uploading photos

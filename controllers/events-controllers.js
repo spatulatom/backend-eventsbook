@@ -277,125 +277,122 @@ const newPost = async (req, res, next) => {
   res.status(201).json({ post: newPost });
 };
 
-const newPhoto = (req, res, next) => {
-  console.log('here2');
+const newPhoto = async (req, res, next) => {
+  console.log('here 1');
   // Configuration
   cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUD_KEY,
-    api_secret: process.env.CLOUD_SECRET
+    api_secret: process.env.CLOUD_SECRET,
   });
 
   //  see familija repository for Amazon web Services S3 bucket connection
+  let response;
+  try {
+    console.log('here2');
+    response = await cloudinary.uploader.upload(req.file.path, {
+      public_id: uuid(),
+    });
+  } catch (err) {
+    const error = new HttpError(
+      'Creating new post failed, server error, please try again in a minute.',
+      500
+    );
+    return next(error);
+  }
 
-  console.log('here');
-  const response = cloudinary.uploader.upload(req.file.path, {
-    public_id: uuid(),
+  console.log('here 3', response);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(
+      new HttpError('Invalid inputs passed, please check your data.', 422)
+    );
+  }
+
+  const { description, address } = req.body;
+
+  let coordinates;
+  try {
+    console.log('bla');
+    coordinates = await getCoordsForAddress(address);
+    console.log('bla2');
+  } catch (error) {
+    console.log('bla3', error);
+    // we dont want execution stopped here and in any case all errors
+    // are hnandled inside getCoordsForAddress and
+    return next();
+  }
+
+  console.log('bla4');
+  let user;
+  try {
+    user = await User.findById(req.userData.userId);
+  } catch (err) {
+    const error = new HttpError(
+      'Creating new photo failed1, please try again.',
+      500
+    );
+    return next(error);
+  }
+
+  if (!user) {
+    const error = new HttpError('Could not find user for provided id.', 404);
+    return next(error);
+  }
+
+  let date;
+  let localDate;
+
+  // when deployed on Heroku we get -1h, so for now we will add +1 but permanet solution needed, perhaps this:
+  // https://stackoverflow.com/questions/69545897/javascript-date-time-different-once-deployed-to-heroku
+  // date = new Date();
+  date = new Date(new Date().setHours(new Date().getHours() + 1));
+  // localDate = new Intl.DateTimeFormat('pl-PL',{ dateStyle: 'medium', timeStyle: 'short' }).format(date)
+  localDate = new Intl.DateTimeFormat('en-GB', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date);
+
+  const newPhoto = new Event({
+    description,
+    address,
+    location: coordinates,
+    image: response.secure_url,
+    creator: req.userData.userId,
+    date: localDate,
+    creatorName: user.name,
+    comments: [],
+    creatorImage: user.image,
+    likes: [],
   });
-  response
-    .catch((err) => {
-      console.log(err);
-      return next(new HttpError('Here problem', err.statusCode));
-    })
-    .then(async (data) => {
-      console.log('Cloudinary response', data);
-      console.log(data.secure_url);
 
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return next(
-          new HttpError('Invalid inputs passed, please check your data.', 422)
-        );
-      }
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await newPhoto.save({ session: sess });
+    user.events.push(newPhoto);
+    await user.save({ session: sess });
+    await sess.commitTransaction();
+  } catch (err) {
+    const error = new HttpError(
+      'Creating new photo failed2, please try again.',
+      500
+    );
+    return next(error);
+  }
 
-      const { description, address } = req.body;
+  fs.unlink(req.file.path, (err) => {
+    //  its not crucial so we wont stop the execution if insuccessfull
+    console.log(err);
+    //   const error = new HttpError(
+    //     'Could not unlink the file.',
+    //     500
+    //   );
+    //   return next(error);
+  });
 
-      let coordinates;
-      try {
-        console.log('bla');
-        coordinates = await getCoordsForAddress(address);
-        console.log('bla2');
-      } catch (error) {
-        console.log('bla3', error);
-        // we dont want execution stopped here and in any case all errors
-        // are hnandled inside getCoordsForAddress and
-        return next();
-      }
-
-      console.log('bla4');
-      let user;
-      try {
-        user = await User.findById(req.userData.userId);
-      } catch (err) {
-        const error = new HttpError(
-          'Creating new photo failed1, please try again.',
-          500
-        );
-        return next(error);
-      }
-
-      if (!user) {
-        const error = new HttpError(
-          'Could not find user for provided id.',
-          404
-        );
-        return next(error);
-      }
-
-      let date;
-      let localDate;
-
-      // when deployed on Heroku we get -1h, so for now we will add +1 but permanet solution needed, perhaps this:
-      // https://stackoverflow.com/questions/69545897/javascript-date-time-different-once-deployed-to-heroku
-      // date = new Date();
-      date = new Date(new Date().setHours(new Date().getHours() + 1));
-      // localDate = new Intl.DateTimeFormat('pl-PL',{ dateStyle: 'medium', timeStyle: 'short' }).format(date)
-      localDate = new Intl.DateTimeFormat('en-GB', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      }).format(date);
-
-      const newPhoto = new Event({
-        description,
-        address,
-        location: coordinates,
-        image: data.secure_url,
-        creator: req.userData.userId,
-        date: localDate,
-        creatorName: user.name,
-        comments: [],
-        creatorImage: user.image,
-        likes: [],
-      });
-
-      try {
-        const sess = await mongoose.startSession();
-        sess.startTransaction();
-        await newPhoto.save({ session: sess });
-        user.events.push(newPhoto);
-        await user.save({ session: sess });
-        await sess.commitTransaction();
-      } catch (err) {
-        const error = new HttpError(
-          'Creating new photo failed2, please try again.',
-          500
-        );
-        return next(error);
-      }
-
-   
-
-      res.status(201).json({ photo: newPhoto });
-    });
-    fs.unlink(req.file.path, (err) => {
-      //  its not crucial so we wont stop the execution if insuccessfull
-      console.log(err);
-      //   const error = new HttpError(
-      //     'Could not unlink the file.',
-      //     500
-      //   );
-      //   return next(error);
-    });
+  res.status(201).json({ photo: newPhoto });
 };
 
 const updateEvent = async (req, res, next) => {

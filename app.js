@@ -59,7 +59,7 @@ app.use((error, req, res, next) => {
     });
   }
   // So when you add a custom error handler, you must delegate to the default Express error handler, when
-  // the headers have already been sent to the client:
+  // the headers have already been sent to the client:llll
   if (res.headerSent) {
     return next(error);
   }

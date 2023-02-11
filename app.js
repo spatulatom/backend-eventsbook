@@ -20,7 +20,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+// app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -43,6 +43,7 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
+  console.log('ERRORR', error)
   if (error instanceof MulterError) {
     // https://github.com/expressjs/multer/issues/602
     // note that 'invalid meme type' is still handled separetly and is not catched here

@@ -278,7 +278,7 @@ const newPost = async (req, res, next) => {
 };
 
 const newPhoto = (req, res, next) => {
-  console.log('here 2');
+  console.log('here2');
   // Configuration
   cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,

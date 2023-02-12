@@ -301,7 +301,7 @@ const newPhoto = async (req, res, next) => {
     );
     return next(error);
   }
-  if(response || error){
+  if(response){
     fs.unlink(req.file.path, (err) => {
       //  its not crucial so we wont stop the execution if insuccessfull
       console.log(err);

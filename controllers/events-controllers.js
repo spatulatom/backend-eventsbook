@@ -301,6 +301,16 @@ const newPhoto = async (req, res, next) => {
     );
     return next(error);
   }
+  if(response || error){
+    fs.unlink(req.file.path, (err) => {
+      //  its not crucial so we wont stop the execution if insuccessfull
+      console.log(err);
+      //   const error = new HttpError(
+      //     'Could not unlink the file.',
+      //     500
+      //   );
+      //   return next(error);
+    });}
 
   console.log('here 3', response);
 
@@ -382,16 +392,7 @@ const newPhoto = async (req, res, next) => {
     );
     return next(error);
   }
-if(response || error){
-  fs.unlink(req.file.path, (err) => {
-    //  its not crucial so we wont stop the execution if insuccessfull
-    console.log(err);
-    //   const error = new HttpError(
-    //     'Could not unlink the file.',
-    //     500
-    //   );
-    //   return next(error);
-  });}
+
 
   res.status(201).json({ photo: newPhoto });
 };

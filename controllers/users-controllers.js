@@ -43,20 +43,23 @@ const signup = async(req, res, next) => {
   console.log('here');
   let response;
   let error;
+  let unlinkImage = false;
   try {
     console.log('here');
     response = await cloudinary.uploader.upload(req.file.path, {
       public_id: uuid(),
     });
+    unlinkImage = true;
   } catch (err) {
     error = new HttpError(
       'Connecting to Cloudinary failed, please try again in a minute.',
       500
     );
+    unlinkImage = true;
     return next(error);
   }
 
-  if(response || error){
+  if(unlinkImage){
     fs.unlink(req.file.path, (err) => {
       //  its not crucial so we wont stop the execution if insuccessfull
       console.log(err);

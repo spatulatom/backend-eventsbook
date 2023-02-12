@@ -288,13 +288,14 @@ const newPhoto = async (req, res, next) => {
 
   //  see familija repository for Amazon web Services S3 bucket connection
   let response;
+  let error
   try {
     console.log('here2');
     response = await cloudinary.uploader.upload(req.file.path, {
       public_id: uuid(),
     });
   } catch (err) {
-    const error = new HttpError(
+     error = new HttpError(
       'Connection to Cloudinary failed, please try again in a minute.',
       500
     );
@@ -381,7 +382,7 @@ const newPhoto = async (req, res, next) => {
     );
     return next(error);
   }
-
+if(response || error){
   fs.unlink(req.file.path, (err) => {
     //  its not crucial so we wont stop the execution if insuccessfull
     console.log(err);
@@ -390,7 +391,7 @@ const newPhoto = async (req, res, next) => {
     //     500
     //   );
     //   return next(error);
-  });
+  });}
 
   res.status(201).json({ photo: newPhoto });
 };

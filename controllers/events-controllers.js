@@ -288,12 +288,14 @@ const newPhoto = async (req, res, next) => {
 
   //  see familija repository for Amazon web Services S3 bucket connection
   let response;
-  let error
+  let error;
+  let deletePicture = false;
   try {
     console.log('here2');
     response = await cloudinary.uploader.upload(req.file.path, {
       public_id: uuid(),
     });
+    deletePicture = true;
   } catch (err) {
      error = new HttpError(
       'Connection to Cloudinary failed, please try again in a minute.',
@@ -301,7 +303,8 @@ const newPhoto = async (req, res, next) => {
     );
     return next(error);
   }
-  if(response){
+  if(deletePicture){
+    console.log('here5')
     fs.unlink(req.file.path, (err) => {
       //  its not crucial so we wont stop the execution if insuccessfull
       console.log(err);

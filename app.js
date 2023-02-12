@@ -1,7 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-// const nestjs = require ('@nestjs/cli');
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -17,11 +15,13 @@ const { MulterError } = require('multer');
 // https://expressjs.com/en/resources/middleware/cors.html#enabling-cors-pre-flight
 
 const app = express();
-
 app.use(bodyParser.json());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// this below is neede if images were served straight from the server to grant an acces to it
+// app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -53,13 +53,16 @@ app.use((error, req, res, next) => {
     error.message =
       'Image too large, max size is 10mb! Upload smaller image please.';
   }
+  // this unlink is if the upload photo process would be stoped for reason like 
+  // existing email on sign in, the photo would alredy be in uploads/images yet differnt
+  // error would stip signing in
   if (req.file) {
     fs.unlink(req.file.path, (err) => {
       console.log(err);
     });
   }
   // So when you add a custom error handler, you must delegate to the default Express error handler, when
-  // the headers have already been sent to the client:llll
+  // the headers have already been sent to the client:
   if (res.headerSent) {
     return next(error);
   }

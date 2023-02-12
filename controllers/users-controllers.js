@@ -29,7 +29,7 @@ const getUsers = async (req, res, next) => {
   res.json({ users: users.map(user => user.toObject({ getters: true })) });
 };
 
-const signup = (req, res, next) => {
+const signup = async(req, res, next) => {
 
    // Configuration
    cloudinary.config({
@@ -41,18 +41,20 @@ const signup = (req, res, next) => {
   //  see familija repository for Amazon web Services S3 bucket connection
 
   console.log('here');
-  const response = cloudinary.uploader.upload(req.file.path, {
-    public_id: uuid(),
-  });
-  response
-    .catch((err) => {
-      console.log(err);
-      return next(new HttpError(err, err.statusCode));
-    })
-    .then(async (data) => {
-      console.log('Cloudinary response', data);
-      console.log(data.secure_url)
-
+  let response;
+  try {
+    console.log('here');
+    response = await cloudinary.uploader.upload(req.file.path, {
+      public_id: uuid(),
+    });
+  } catch (err) {
+    const error = new HttpError(
+      'Connecting to Cloudinary failed, please try again in a minute.',
+      500
+    );
+    return next(error);
+  }
+console.log('here 2', response)
 
   const errors = validationResult(req);
             
@@ -97,7 +99,7 @@ const signup = (req, res, next) => {
   const createdUser = new User({
     name,
     email,
-    image: data.secure_url,
+    image: response.secure_url,
     password: hashedPassword,
     events: []
   });
@@ -154,7 +156,7 @@ try{
 
 }
 
-      })
+      
       
 
 

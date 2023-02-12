@@ -295,7 +295,7 @@ const newPhoto = async (req, res, next) => {
     });
   } catch (err) {
     const error = new HttpError(
-      'Creating new post failed, server error, please try again in a minute.',
+      'Connection to Cloudinary failed, please try again in a minute.',
       500
     );
     return next(error);

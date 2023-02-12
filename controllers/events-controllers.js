@@ -301,6 +301,7 @@ const newPhoto = async (req, res, next) => {
       'Connection to Cloudinary failed, please try again in a minute.',
       500
     );
+    deletePicture = true;
     return next(error);
   }
   if(deletePicture){

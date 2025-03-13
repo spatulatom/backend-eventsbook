@@ -1,35 +1,34 @@
-const { validationResult } = require('express-validator');
-const mongoose = require('mongoose');
+const { validationResult } = require("express-validator");
+const mongoose = require("mongoose");
 
-const HttpError = require('../models/http-error');
-const getCoordsForAddress = require('../util/location');
-const Event = require('../models/event');
-const User = require('../models/user');
+const HttpError = require("../models/http-error");
+const getCoordsForAddress = require("../util/location");
+const Event = require("../models/event");
+const User = require("../models/user");
 
 // const AWS = require('aws-sdk');
 // const { response } = require('express');
-const fs = require('fs');
-const {v1} = require('uuid');
+const fs = require("fs");
+const { v1 } = require("uuid");
 
 // const nodemailer = require('nodemailer');
 // const sendgridTransport = require('nodemailer-sendgrid-transport');
 // const sgMail = require('@sendgrid/mail');
 
-
 // clodinary
-const cloudinary = require('cloudinary').v2;
+const cloudinary = require("cloudinary").v2;
 
 const addLike = async (req, res, next) => {
   let user;
   try {
     user = await User.findById(req.userData.userId);
   } catch (err) {
-    const error = new HttpError('No connection to Mongodb 1, addLike', 500);
+    const error = new HttpError("No connection to Mongodb 1, addLike", 500);
     return next(error);
   }
 
   if (!user) {
-    const error = new HttpError('Could not find user for provided id.', 404);
+    const error = new HttpError("Could not find user for provided id.", 404);
     return next(error);
   }
 
@@ -38,14 +37,14 @@ const addLike = async (req, res, next) => {
     event = await Event.findById(req.body.placeId);
   } catch (err) {
     const error = new HttpError(
-      'No connection no MongoBd 2, addLike, please try again.',
+      "No connection no MongoBd 2, addLike, please try again.",
       500
     );
     return next(error);
   }
 
   if (!event) {
-    const error = new HttpError('Could not find event for provided id.', 404);
+    const error = new HttpError("Could not find event for provided id.", 404);
     return next(error);
   }
 
@@ -55,14 +54,14 @@ const addLike = async (req, res, next) => {
   try {
     await event.save();
   } catch (err) {
-    const error = new HttpError('Adding like failed.', 500);
+    const error = new HttpError("Adding like failed.", 500);
 
     return next(error);
   }
   const likes = event.toObject({ getters: true }).likes;
   // res.status(200).json({ likes: place.toObject({ getters: true }) });
   res.status(201).json(likes);
-  console.log('success addedlike');
+  console.log("success addedlike");
 };
 
 const deleteLike = async (req, res, next) => {
@@ -70,12 +69,12 @@ const deleteLike = async (req, res, next) => {
   try {
     user = await User.findById(req.userData.userId);
   } catch (err) {
-    const error = new HttpError('No connection to Mongodb 1, addLike', 500);
+    const error = new HttpError("No connection to Mongodb 1, addLike", 500);
     return next(error);
   }
 
   if (!user) {
-    const error = new HttpError('Could not find user for provided id.', 404);
+    const error = new HttpError("Could not find user for provided id.", 404);
     return next(error);
   }
 
@@ -84,14 +83,14 @@ const deleteLike = async (req, res, next) => {
     event = await Event.findById(req.body.placeId);
   } catch (err) {
     const error = new HttpError(
-      'No connection no MongoBd 2, addLike, please try again.',
+      "No connection no MongoBd 2, addLike, please try again.",
       500
     );
     return next(error);
   }
 
   if (!event) {
-    const error = new HttpError('Could not find event for provided id.', 404);
+    const error = new HttpError("Could not find event for provided id.", 404);
     return next(error);
   }
 
@@ -101,7 +100,7 @@ const deleteLike = async (req, res, next) => {
   try {
     await event.save();
   } catch (err) {
-    const error = new HttpError('Deleting like failed.', 500);
+    const error = new HttpError("Deleting like failed.", 500);
 
     return next(error);
   }
@@ -114,21 +113,21 @@ const deleteLike = async (req, res, next) => {
     event2 = await Event.findById(req.body.placeId);
   } catch (err) {
     const error = new HttpError(
-      'No connection no MongoBd 2, addLike, please try again.',
+      "No connection no MongoBd 2, addLike, please try again.",
       500
     );
     return next(error);
   }
 
   if (!event2) {
-    const error = new HttpError('Could not find event for provided id.', 404);
+    const error = new HttpError("Could not find event for provided id.", 404);
     return next(error);
   }
 
   const likes = event2.toObject({ getters: true }).likes;
   res.status(200).json(likes);
   // res.status(200).json({ likes: place2.toObject({ getters: true }) });
-  console.log('success delete');
+  console.log("success delete");
 };
 
 const getAllUsersEvents = async (req, res, next) => {
@@ -136,12 +135,12 @@ const getAllUsersEvents = async (req, res, next) => {
   try {
     events = await Event.find();
   } catch (err) {
-    const error = new HttpError('Something went wrong, server error.', 500);
+    const error = new HttpError("Something went wrong, server error.", 500);
     return next(error);
   }
 
   if (!events) {
-    const error = new HttpError('There is no events to fetch on MongoDb.', 404);
+    const error = new HttpError("There is no events to fetch on MongoDb.", 404);
     return next(error);
   }
 
@@ -158,7 +157,7 @@ const getEventById = async (req, res, next) => {
     event = await Event.findById(eventId);
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong, no connection to MongoDb.',
+      "Something went wrong, no connection to MongoDb.",
       500
     );
     return next(error);
@@ -166,7 +165,7 @@ const getEventById = async (req, res, next) => {
 
   if (!event) {
     const error = new HttpError(
-      'Could not find event for the provided id.',
+      "Could not find event for the provided id.",
       404
     );
     return next(error);
@@ -181,10 +180,10 @@ const getEventsByUserId = async (req, res, next) => {
   // let places;
   let userWithEvents;
   try {
-    userWithEvents = await User.findById(userId).populate('events');
+    userWithEvents = await User.findById(userId).populate("events");
   } catch (err) {
     const error = new HttpError(
-      'Fetching places failed, please try again later.',
+      "Fetching places failed, please try again later.",
       500
     );
     return next(error);
@@ -193,7 +192,7 @@ const getEventsByUserId = async (req, res, next) => {
   // if (!places || places.length === 0) {
   if (!userWithEvents || userWithEvents.events.length === 0) {
     return next(
-      new HttpError('Could not find events for the provided user id.', 404)
+      new HttpError("Could not find events for the provided user id.", 404)
     );
   }
 
@@ -208,7 +207,7 @@ const newPost = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      new HttpError('Invalid inputs passed, please check your data.', 422)
+      new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
 
@@ -226,14 +225,14 @@ const newPost = async (req, res, next) => {
     user = await User.findById(req.userData.userId);
   } catch (err) {
     const error = new HttpError(
-      'Creating new post failed, server error, please try again in a minute.',
+      "Creating new post failed, server error, please try again in a minute.",
       500
     );
     return next(error);
   }
 
   if (!user) {
-    const error = new HttpError('Could not find user for provided id.', 404);
+    const error = new HttpError("Could not find user for provided id.", 404);
     return next(error);
   }
 
@@ -242,9 +241,9 @@ const newPost = async (req, res, next) => {
   // date = new Date();
   date = new Date(new Date().setHours(new Date().getHours() + 1));
   // localDate = new Intl.DateTimeFormat('pl-PL',{ dateStyle: 'full', timeStyle: 'short' }).format(date)
-  localDate = new Intl.DateTimeFormat('en-GB', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
+  localDate = new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
   }).format(date);
 
   const newPost = new Event({
@@ -269,7 +268,7 @@ const newPost = async (req, res, next) => {
     await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError(
-      'Creating new post failed, please try again.',
+      "Creating new post failed, please try again.",
       500
     );
     return next(error);
@@ -280,7 +279,7 @@ const newPost = async (req, res, next) => {
 };
 
 const newPhoto = async (req, res, next) => {
-  console.log('here 1');
+  console.log("here 1");
   // Configuration
   cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -293,21 +292,21 @@ const newPhoto = async (req, res, next) => {
   let error;
   let deletePicture = false;
   try {
-    console.log('here2');
+    console.log("here2");
     response = await cloudinary.uploader.upload(req.file.path, {
       public_id: v1(),
     });
     deletePicture = true;
   } catch (err) {
-     error = new HttpError(
-      'Connection to Cloudinary failed, please try again in a minute.',
+    error = new HttpError(
+      "Connection to Cloudinary failed, please try again in a minute.",
       500
     );
     deletePicture = true;
     return next(error);
   }
-  if(deletePicture){
-    console.log('here5')
+  if (deletePicture) {
+    console.log("here5");
     fs.unlink(req.file.path, (err) => {
       //  its not crucial so we wont stop the execution if insuccessfull
       console.log(err);
@@ -316,14 +315,15 @@ const newPhoto = async (req, res, next) => {
       //     500
       //   );
       //   return next(error);
-    });}
+    });
+  }
 
-  console.log('here 3', response);
+  console.log("here 3", response);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      new HttpError('Invalid inputs passed, please check your data.', 422)
+      new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
 
@@ -331,30 +331,30 @@ const newPhoto = async (req, res, next) => {
 
   let coordinates;
   try {
-    console.log('bla');
+    console.log("bla");
     coordinates = await getCoordsForAddress(address);
-    console.log('bla2');
+    console.log("bla2");
   } catch (error) {
-    console.log('bla3', error);
+    console.log("bla3", error);
     // we dont want execution stopped here and in any case all errors
     // are hnandled inside getCoordsForAddress and
     return next();
   }
 
-  console.log('bla4');
+  console.log("bla4");
   let user;
   try {
     user = await User.findById(req.userData.userId);
   } catch (err) {
     const error = new HttpError(
-      'Creating new photo failed1, please try again.',
+      "Creating new photo failed1, please try again.",
       500
     );
     return next(error);
   }
 
   if (!user) {
-    const error = new HttpError('Could not find user for provided id.', 404);
+    const error = new HttpError("Could not find user for provided id.", 404);
     return next(error);
   }
 
@@ -366,9 +366,9 @@ const newPhoto = async (req, res, next) => {
   // date = new Date();
   date = new Date(new Date().setHours(new Date().getHours() + 1));
   // localDate = new Intl.DateTimeFormat('pl-PL',{ dateStyle: 'medium', timeStyle: 'short' }).format(date)
-  localDate = new Intl.DateTimeFormat('en-GB', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
+  localDate = new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
   }).format(date);
 
   const newPhoto = new Event({
@@ -393,12 +393,11 @@ const newPhoto = async (req, res, next) => {
     await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError(
-      'Creating new photo failed2, please try again.',
+      "Creating new photo failed2, please try again.",
       500
     );
     return next(error);
   }
-
 
   res.status(201).json({ photo: newPhoto });
 };
@@ -407,7 +406,7 @@ const updateEvent = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(
-      new HttpError('Invalid inputs passed, please check your data.', 422)
+      new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
 
@@ -419,7 +418,7 @@ const updateEvent = async (req, res, next) => {
     event = await Event.findById(eventId);
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong, try again in a minute please.',
+      "Something went wrong, try again in a minute please.",
       500
     );
     return next(error);
@@ -430,7 +429,7 @@ const updateEvent = async (req, res, next) => {
   // this mongoose special object which looks like object but its not really
   // (and whenever we res.send it we need to do this toObject method)
   if (event.creator.toString() !== req.userData.userId) {
-    const error = new HttpError('You are not allowed to edit this event.', 401);
+    const error = new HttpError("You are not allowed to edit this event.", 401);
     return next(error);
   }
 
@@ -438,11 +437,11 @@ const updateEvent = async (req, res, next) => {
 
   let coordinates;
   try {
-    console.log('bla');
+    console.log("bla");
     coordinates = await getCoordsForAddress(address);
-    console.log('bla2');
+    console.log("bla2");
   } catch (error) {
-    console.log('bla3', error);
+    console.log("bla3", error);
 
     return next();
   }
@@ -453,7 +452,7 @@ const updateEvent = async (req, res, next) => {
     await event.save();
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong2, could not update event.',
+      "Something went wrong2, could not update event.",
       500
     );
     return next(error);
@@ -467,17 +466,17 @@ const deleteEvent = async (req, res, next) => {
 
   let event;
   try {
-    event = await Event.findById(eventId).populate('creator');
+    event = await Event.findById(eventId).populate("creator");
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong1, could not delete event.',
+      "Something went wrong1, could not delete event.",
       500
     );
     return next(error);
   }
 
   if (!event) {
-    const error = new HttpError('Could not find event for this id.', 404);
+    const error = new HttpError("Could not find event for this id.", 404);
     return next(error);
   }
 
@@ -485,7 +484,7 @@ const deleteEvent = async (req, res, next) => {
   // is already returning a string here
   if (event.creator.id !== req.userData.userId) {
     const error = new HttpError(
-      'You are not allowed to delete this event.',
+      "You are not allowed to delete this event.",
       401
     );
     return next(error);
@@ -500,7 +499,7 @@ const deleteEvent = async (req, res, next) => {
     await sess.commitTransaction();
   } catch (err) {
     const error = new HttpError(
-      'Something went wrong2, could not delete this event.',
+      "Something went wrong2, could not delete this event.",
       500
     );
     return next(error);
@@ -513,7 +512,7 @@ const deleteEvent = async (req, res, next) => {
     });
   }
 
-  res.status(200).json({ message: 'Deleted place.' });
+  res.status(200).json({ message: "Deleted place." });
 };
 exports.getAllUsersEvents = getAllUsersEvents;
 exports.getEventById = getEventById;

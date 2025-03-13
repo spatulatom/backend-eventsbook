@@ -2,18 +2,19 @@ const { validationResult } = require('express-validator');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-const sendgridTransport = require('nodemailer-sendgrid-transport');
+// const nodemailer = require('nodemailer');
+// const sendgridTransport = require('nodemailer-sendgrid-transport');
 const cloudinary = require('cloudinary').v2;
+const sgMail = require('@sendgrid/mail');
 
 // for aws
-const AWS = require('aws-sdk');
+// const AWS = require('aws-sdk');
 const fs = require ('fs');
-const uuid = require('uuid/v1');
+const {v1} = require('uuid');
 
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
-const { ProcessCredentials } = require('aws-sdk');
+// const { ProcessCredentials } = require('aws-sdk');
 
 const getUsers = async (req, res, next) => {
   let users;
@@ -40,14 +41,14 @@ const signup = async(req, res, next) => {
 
   //  see familija repository for Amazon web Services S3 bucket connection
 
-  console.log('here');
+  console.log('here SIGNING UP');
   let response;
   let error;
   let unlinkImage = false;
   try {
     console.log('here');
     response = await cloudinary.uploader.upload(req.file.path, {
-      public_id: uuid(),
+      public_id: v1(),
     });
     unlinkImage = true;
   } catch (err) {
@@ -150,23 +151,27 @@ console.log('here 2', response)
 
     // email is send after response so we are not blocking function execution in case 
     // sending email fails
-const transporter = nodemailer.createTransport(
-  sendgridTransport({
-    auth: {
-      // you can use here usrename as well
-      api_key: process.env.SENDGRID_API_KEY
-    }
-  })
-);
+// const transporter = nodemailer.createTransport(
+//   sendgridTransport({
+//     auth: {
+//       // you can use here usrename as well
+//       api_key: process.env.SENDGRID_API_KEY
+//     }
+//   })
+// );
+ // Set up SendGrid
+ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 try{
-  await transporter.sendMail({
+  console.log('signing up user email', email);
+  await sgMail.send({
     to: email,
     from: 'spatulatom@gmail.com',
     subject: 'Your account was created.',
     html: '<h2>Your account has been created on https://eventsbook-91260.web.app/ !</h2>'
   });
 }catch(err){
-  console.log('ERROR',err);
+  console.log('ERROR sendgrid, signing up user',err);
   return next()
 
 }
@@ -305,16 +310,16 @@ const reset = async (req,res,next)=>{
       );
       return next(error);
     }
-    const transporter = nodemailer.createTransport(
-      sendgridTransport({
-        auth: {
-          // you can use here usrename as well
-          api_key: process.env.SENDGRID_API_KEY
-        }
-      })
-    );
+    // const transporter = nodemailer.createTransport(
+    //   sendgridTransport({
+    //     auth: {
+    //       // you can use here usrename as well
+    //       api_key: process.env.SENDGRID_API_KEY
+    //     }
+    //   })
+    // );
     try{
-      await transporter.sendMail({
+      await sgMail.send({
         to: req.body.email,
           from: 'elkom9393@gmail.com',
           subject: 'Password reset.',

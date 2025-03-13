@@ -6,13 +6,15 @@ const getCoordsForAddress = require('../util/location');
 const Event = require('../models/event');
 const User = require('../models/user');
 
-const AWS = require('aws-sdk');
+// const AWS = require('aws-sdk');
 // const { response } = require('express');
 const fs = require('fs');
-const uuid = require('uuid/v1');
+const {v1} = require('uuid');
 
-const nodemailer = require('nodemailer');
-const sendgridTransport = require('nodemailer-sendgrid-transport');
+// const nodemailer = require('nodemailer');
+// const sendgridTransport = require('nodemailer-sendgrid-transport');
+// const sgMail = require('@sendgrid/mail');
+
 
 // clodinary
 const cloudinary = require('cloudinary').v2;
@@ -293,7 +295,7 @@ const newPhoto = async (req, res, next) => {
   try {
     console.log('here2');
     response = await cloudinary.uploader.upload(req.file.path, {
-      public_id: uuid(),
+      public_id: v1(),
     });
     deletePicture = true;
   } catch (err) {

@@ -59,6 +59,7 @@ app.use((error, req, res, next) => {
   if (req.file) {
     fs.unlink(req.file.path, (err) => {
       console.log(err);
+      
     });
   }
   // So when you add a custom error handler, you must delegate to the default Express error handler, when

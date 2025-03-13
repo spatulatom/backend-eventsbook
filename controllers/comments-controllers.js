@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
-const uuid = require('uuid/v1');
+const {v1} = require('uuid');
 
 
 const HttpError = require('../models/http-error');
@@ -67,7 +67,7 @@ const createComment = async(req, res, next)=>{
                        description: req.body.description,
                        addedBy: user.name,
                        date: localDate,
-                       id: uuid()
+                       id: v1()
                     }
 
                     place.comments.push(comment);

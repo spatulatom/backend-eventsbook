@@ -215,7 +215,7 @@ const newPost = async (req, res, next) => {
 
   let coordinates;
   try {
-    coordinates = await getCoordsForAddress(address);
+    coordinates = await getCoordsForAddress();
   } catch (error) {
     return next(error);
   }
@@ -332,7 +332,7 @@ const newPhoto = async (req, res, next) => {
   let coordinates;
   try {
     console.log("bla");
-    coordinates = await getCoordsForAddress(address);
+    coordinates = await getCoordsForAddress();
     console.log("bla2");
   } catch (error) {
     console.log("bla3", error);
@@ -438,7 +438,7 @@ const updateEvent = async (req, res, next) => {
   let coordinates;
   try {
     console.log("bla");
-    coordinates = await getCoordsForAddress(address);
+    coordinates = await getCoordsForAddress();
     console.log("bla2");
   } catch (error) {
     console.log("bla3", error);
@@ -493,7 +493,11 @@ const deleteEvent = async (req, res, next) => {
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
-    await event.remove({ session: sess });
+     // Replace event.remove() as it got depraceated with either of these approaches:
+     await Event.deleteOne({ _id: eventId }, { session: sess });
+     // OR
+     // await Event.findByIdAndDelete(event._id, { session: sess });
+     
     event.creator.events.pull(event);
     await event.creator.save({ session: sess });
     await sess.commitTransaction();

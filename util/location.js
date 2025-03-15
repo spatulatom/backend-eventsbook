@@ -71,32 +71,33 @@
 async function getCoordsForAddress(address = "") {
   // Define locations for different cities with unique first letters
   const locations = [
-    { lat: -33.8688197, lng: 151.2092955, city: "Sydney" },      // S (fixed from "Australia")
-    { lat: 40.7484474, lng: -73.9871516, city: "New York" },    // N
-    { lat: 51.5073509, lng: -0.1277583, city: "London" },       // L
-    { lat: 48.8566969, lng: 2.3514616, city: "Paris" },         // P
-    { lat: 35.6894875, lng: 139.6917064, city: "Tokyo" },       // T
-    { lat: 52.2296756, lng: 21.0122287, city: "Warsaw" },       // W
-    { lat: 53.3498053, lng: -6.2603097, city: "Dublin" },       // D
-    { lat: 41.9027835, lng: 12.4963655, city: "Rome" },         // R
-    { lat: 52.5200066, lng: 13.404954, city: "Berlin" },        // B
-    { lat: 59.9138688, lng: 10.7522454, city: "Oslo" },         // O
-    { lat: 45.4642035, lng: 9.1899323, city: "Milan" },         // M
-    { lat: 41.0082376, lng: 28.9783589, city: "Istanbul" },     // I
-    { lat: 55.6760968, lng: 12.5683371, city: "Copenhagen" },   // C
-    { lat: 48.2083537, lng: 16.3725042, city: "Vienna" },       // V
-    { lat: -6.2087634, lng: 106.845599, city: "Jakarta" },      // J
-    { lat: 3.139003, lng: 101.686855, city: "Kuala Lumpur" },   // K
-    { lat: 23.1291, lng: 113.2644, city: "Guangzhou" },         // G
-    { lat: 47.3768866, lng: 8.541694, city: "Zurich" },         // Z (fixed coordinates)
-    { lat: 19.4326077, lng: -99.133208, city: "Mexico City" },  // E (new: "E" for "Mexico City")
-    { lat: 64.1354808, lng: -21.8954086, city: "Reykjavik" },   // H (new: "H" for "Reykjavik")
-    { lat: 30.0444196, lng: 31.2357116, city: "Cairo" },        // A (new: "A" for "Cairo")
-    { lat: -1.2920659, lng: 36.8219462, city: "Nairobi" },      // F (new: "F" for "Nairobi")
-    { lat: 39.904211, lng: 116.407395, city: "Beijing" },       // Q (new: "Q" for "Beijing" - using "Q" as no "Q" yet)
-    { lat: 25.2048493, lng: 55.2707828, city: "Dubai" },        // U (new: "U" for "Dubai")
-    { lat: -34.6036844, lng: -58.3815591, city: "Buenos Aires" } // X (new: "X" for "Buenos Aires" - using "X" as no "X" yet)
-];
+    { lat: 37.983917, lng: 23.72936, city: "Athens" },       // A
+    { lat: 52.5200066, lng: 13.404954, city: "Berlin" },     // B
+    { lat: 30.0444196, lng: 31.2357116, city: "Cairo" },      // C
+    { lat: 53.3498053, lng: -6.2603097, city: "Dublin" },     // D
+    { lat: 55.9533456, lng: -3.1883749, city: "Edinburgh" },  // E
+    { lat: 43.7695604, lng: 11.2558136, city: "Florence" },   // F
+    { lat: 46.2043907, lng: 6.1431577, city: "Geneva" },      // G
+    { lat: 60.169857, lng: 24.9383791, city: "Helsinki" },    // H
+    { lat: 41.0082376, lng: 28.9783589, city: "Istanbul" },   // I
+    { lat: -6.2087634, lng: 106.845599, city: "Jakarta" },    // J
+    { lat: 27.7172453, lng: 85.3239605, city: "Kathmandu" },  // K
+    { lat: 51.5073509, lng: -0.1277583, city: "London" },     // L
+    { lat: 55.755826, lng: 37.6172999, city: "Moscow" },      // M
+    { lat: 40.7484474, lng: -73.9871516, city: "New York" },  // N
+    { lat: 59.9138688, lng: 10.7522454, city: "Oslo" },       // O
+    { lat: 48.8566969, lng: 2.3514616, city: "Paris" },       // P
+    { lat: 46.8138783, lng: -71.2079809, city: "Quebec" },    // Q
+    { lat: 41.9027835, lng: 12.4963655, city: "Rome" },       // R
+    { lat: -33.8688197, lng: 151.2092955, city: "Sydney" },   // S
+    { lat: 35.6894875, lng: 139.6917064, city: "Tokyo" },     // T
+    { lat: 47.8863988, lng: 106.9057439, city: "Ulaanbaatar" }, // U
+    { lat: 48.2083537, lng: 16.3725042, city: "Vienna" },     // V
+    { lat: 52.2296756, lng: 21.0122287, city: "Warsaw" },     // W
+    { lat: 34.341574, lng: 108.940175, city: "Xi'an" },       // X
+    { lat: 35.4437078, lng: 139.6380256, city: "Yokohama" },  // Y
+    { lat: 47.3768866, lng: 8.541694, city: "Zurich" }        // Z
+  ];
 
   // Create a map to store unique cities by first letter
   // Only the first city for each letter will be kept

@@ -215,7 +215,7 @@ const newPost = async (req, res, next) => {
 
   let coordinates;
   try {
-    coordinates = await getCoordsForAddress();
+    coordinates = await getCoordsForAddress(address);
   } catch (error) {
     return next(error);
   }
@@ -332,7 +332,7 @@ const newPhoto = async (req, res, next) => {
   let coordinates;
   try {
     console.log("bla");
-    coordinates = await getCoordsForAddress();
+    coordinates = await getCoordsForAddress(address);
     console.log("bla2");
   } catch (error) {
     console.log("bla3", error);
@@ -438,7 +438,7 @@ const updateEvent = async (req, res, next) => {
   let coordinates;
   try {
     console.log("bla");
-    coordinates = await getCoordsForAddress();
+    coordinates = await getCoordsForAddress(address);
     console.log("bla2");
   } catch (error) {
     console.log("bla3", error);
